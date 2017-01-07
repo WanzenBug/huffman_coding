@@ -1,6 +1,9 @@
 //! **huffman_coding** is a small library for reading and writing huffman encoded data
 //!
-//! There are only 3 things you need to know
+//! There are only 3 things you need to know:
+//! * Use HuffmanTree to change the coding and decoding based on your data
+//! * Use HuffmanWriter to encode data
+//! * use HuffmanReader to decode data
 
 extern crate bitstream;
 extern crate bit_vec;
@@ -223,7 +226,6 @@ impl HuffmanTree {
 /// inner writer.
 ///
 /// # Examples
-///
 /// ```
 /// extern crate huffman_coding;
 /// let pseudo_data = vec![0, 0, 1, 2, 2];
@@ -268,11 +270,6 @@ impl<W> Write for HuffmanWriter<W> where W: Write {
     }
 }
 
-pub struct HuffmanReader<R> where R: Read {
-    inner: bitstream::BitReader<R>,
-    tree: HuffmanTree,
-}
-
 /// *HuffmanReader* is a Read implementation that can read encoded words from the inner reader
 ///
 /// # Examples
@@ -289,6 +286,11 @@ pub struct HuffmanReader<R> where R: Read {
 /// assert!(reader.read_exact(&mut buffer[..]).is_ok());
 /// assert_eq!(&buffer[..], &[2, 2, 0, 0, 1]);
 /// ```
+pub struct HuffmanReader<R> where R: Read {
+    inner: bitstream::BitReader<R>,
+    tree: HuffmanTree,
+}
+
 impl<R> HuffmanReader<R> where R: Read {
     /// Construct a new reader, using the provided HuffmanTree for decoding
     pub fn new(reader: R, tree: HuffmanTree) -> Self {
