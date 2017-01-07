@@ -1,0 +1,21 @@
+[package]
+name = "huffman"
+version = "0.1.0"
+authors = ["WanzenBug <moritz9422@gmail.com>"]
+
+[lib]
+name = "huffman"
+path = "src/lib.rs"
+
+[[bin]]
+name = "encode"
+path = "src/bin/encode.rs"
+
+[[bin]]
+name = "decode"
+path = "src/bin/decode.rs"
+
+[dependencies]
+bitstream-rs = "0.1.2"
+bit-vec = "0.4.3"
+clap = "2.20.0"
