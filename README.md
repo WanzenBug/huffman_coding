@@ -4,7 +4,7 @@ Small library for pure huffman coding in Rust.
 
 This library exposes a reader for decoding encoded data and a writer for encoding data. 
 
-[Documentation](https://docs.rs/huffman_coding)
+[Documentation](https://docs.rs/huffman-coding)
 
 ## Usage
 First add this library as dependency to your cargo manifest
