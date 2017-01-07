@@ -1,27 +1,30 @@
-extern crate huffman;
+extern crate huffman_coding;
+
+#[cfg(feature = "bin")]
 extern crate clap;
 
+#[cfg(feature = "bin")]
 mod util;
 
-use std::fs::File;
-use std::io::{copy, BufReader, BufWriter, Write};
-use huffman::{HuffmanReader};
-use clap::{App, Arg};
-
+#[cfg(feature = "bin")]
 fn main() {
-    let matches = App::new("Huffman decoder")
+    use std::fs::File;
+    use std::io::{copy, BufReader, BufWriter, Write, Read};
+    use huffman_coding::{HuffmanReader, HuffmanTree};
+
+    let matches = clap::App::new("Huffman decoder")
         .version("0.1")
         .author("Moritz Wanzenböck <moritz.wanzenboeck@gmail.com>")
         .about("Decompress files using pure Huffman coding")
-        .arg(Arg::with_name("INPUT")
+        .arg(clap::Arg::with_name("INPUT")
             .required(true)
             .help("Sets the input file to use")
             .index(1))
-        .arg(Arg::with_name("OUTPUT")
+        .arg(clap::Arg::with_name("OUTPUT")
             .required(true)
             .help("Sets the output file to use")
             .index(2))
-        .arg(Arg::with_name("verbose")
+        .arg(clap::Arg::with_name("verbose")
             .short("v")
             .help("Sets verbose output"))
         .get_matches();
@@ -31,7 +34,10 @@ fn main() {
     let mut read = util::StatsReader::new(BufReader::new(infile));
     let mut write = util::StatsWriter::new(BufWriter::new(outfile));
     {
-        let mut reader = HuffmanReader::new(&mut read).expect("Could not read huffman table");
+        let mut table: [u8; 256] = [0; 256];
+        read.read_exact(&mut table).expect("Could not read encoding table");
+        let tree = HuffmanTree::from_table(&table);
+        let mut reader = HuffmanReader::new(&mut read, tree);
         copy(&mut reader, &mut write).expect("Something went wrong while encoding");
     }
     if matches.is_present("verbose") {
@@ -42,4 +48,10 @@ fn main() {
         println!("Read:    {} bytes", read);
         println!("Written: {} bytes", written);
     }
+}
+
+#[cfg(not(feature = "bin"))]
+fn main() {
+    println!("Feature not enabled");
+    std::process::exit(1);
 }
