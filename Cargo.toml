@@ -4,7 +4,7 @@ version = "0.1.0"
 authors = ["WanzenBug <moritz9422@gmail.com>"]
 description = "Crate for doing pure huffman coding"
 license = "MIT"
-repository = "https://github.com:WanzenBug/huffman_coding"
+repository = "https://github.com/WanzenBug/huffman_coding"
 documentation = "https://docs.rs/huffman_coding/"
 
 [lib]
